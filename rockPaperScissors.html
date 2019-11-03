@@ -1,0 +1,217 @@
+<html>
+	<style>
+		table, td 
+		{
+		  border: 1px solid black;
+		}
+	</style>
+	
+	<body>
+		<input type="text" placeholder = "Enter your choice" id="userChoice" </input>
+		<button onclick="getChoice()">Go</button>
+		<text id="resultText"></text>
+		
+		<p>
+		History
+		<table id="scoreTable"> 
+		<tr>
+		<td>Round</td>
+		<td>User Choice</td>
+		<td>Comp Choice</td>
+		<td>Result</td>
+		</tr></table>
+		</p>
+		
+		
+		<p>
+		<table id="ratioTable"> 
+		<tr>
+		<td>ratio</td>
+		<td></td>
+		</tr></table>
+		<p>
+		
+		
+		
+		<script>
+		var choices = ["rock", "paper", "scissors"];
+		var outcomePossibilities = ["win", "lose", "tie"];
+		var round = 1;
+		 
+		var gameResults = []
+		const lookUpLength = 10;
+		
+		function getChoice()
+		{
+			var userChoice = document.getElementById("userChoice").value;
+			userChoice = userChoice.toLowerCase();
+			console.log("Hellow~");
+			
+			if (userChoice == "paper" || userChoice == "rock" || userChoice == "scissors")
+			{
+				game(userChoice);
+			}
+			else
+			{
+				window.alert("Please enter \"rock\" \"paper\" or \"scissors\"...");
+			}
+			
+		}
+		
+		function game(userChoice) 
+		{
+		
+		
+			var gameObj = {r_round: 0, r_userChoice: "", r_computerChoice: "", r_result: "", r_ratio: 0}
+			gameResults.push(gameObj);
+			
+			
+			var computerChoice = choices[(Math.floor(Math.random() * 3))];
+			
+			
+			
+			gameObj.r_round = round;
+			gameObj.r_userChoice = userChoice;
+			gameObj.r_computerChoice = computerChoice;
+		
+			
+			
+					if (userChoice == computerChoice)
+					{
+						gameObj.r_result = "Tie";
+					}
+					else if (userChoice == "paper" && computerChoice == "rock")
+					{
+						gameObj.r_result = "Win";
+					}
+					else if (userChoice == "rock" && computerChoice == "scissors")
+					{
+						gameObj.r_result = "Win";
+					}
+					else if (userChoice == "scissors" && computerChoice == "paper")
+					{
+						gameObj.r_result = "Win";
+					}
+					else if (userChoice == "paper" && computerChoice == "rock")
+					{
+						gameObj.r_result = "Win";
+					}
+					else
+					{
+						gameObj.r_result = "Lose";
+					}
+						
+				//console.log(userChoice);
+				//console.log(computerChoice);	
+			
+			
+			showResult(gameObj.r_result);
+			
+			
+			
+			//console.log(gameResults);
+		
+			getRatio(gameResults);
+			populateTable (gameResults)
+			
+			round ++;
+		}
+		
+		function showResult (result)
+		{
+			document.getElementById("resultText").innerHTML = result + "!";
+		}
+		
+		
+		function getRatio(gameResults)
+		{
+			var wins = 0; 
+			var x = gameResults.length - 1 
+			var roundsTested = round;
+			
+			
+				for (y = lookUpLength; y > 0; y --)
+				{
+					if (x < 0)
+					{
+						break;
+					}
+					
+					if (gameResults[x].r_result == "Win")
+					{
+						wins++
+					}
+					x--;
+				} 
+			
+			//console.log(wins)
+			if (round > lookUpLength)
+			{
+				roundsTested = lookUpLength;
+			}
+			
+			var ratio = ((wins/roundsTested) * 100) ;
+			ratio = ratio.toFixed(2);
+			
+			showRatio(ratio);
+			
+		}
+		
+		function showRatio (ratio)
+		{
+			var row = document.getElementById("ratioTable").rows[0].cells;
+					
+			row[1].innerHTML = ratio + "%";
+		}
+		
+		
+		function populateTable (gameResults)
+		{	
+			
+			var table = document.getElementById("scoreTable");
+			
+			//If under 10 rounds, each round will add a row 
+			if (round <= lookUpLength)
+			{
+				var row = table.insertRow(intRow);
+				var cell1 = row.insertCell(0);
+				var cell2 = row.insertCell(1);
+				var cell3 = row.insertCell(2);
+				var cell4 = row.insertCell(3);
+				
+				for (var intRow = 0; intRow < gameResults.length; intRow++)
+				{
+					cell1.innerHTML = gameResults[intRow].r_round;
+					cell2.innerHTML = gameResults[intRow].r_userChoice;
+					cell3.innerHTML = gameResults[intRow].r_computerChoice;
+					cell4.innerHTML = gameResults[intRow].r_result;
+					
+				}
+			}
+			//otherwise each round will move up the table
+			else
+			{
+				
+				//1 is first row after the labels
+				r = 1;
+				for (var x = (gameResults.length - lookUpLength); x < gameResults.length; x++ )
+				{
+					
+					var row = document.getElementById("scoreTable").rows[(r)].cells;
+					
+						row[0].innerHTML = gameResults[x].r_round;
+						row[1].innerHTML = gameResults[x].r_userChoice;
+						row[2].innerHTML = gameResults[x].r_computerChoice;
+						row[3].innerHTML = gameResults[x].r_result;
+						
+						console.log(x);
+					r++;
+				}
+	
+			}
+	
+		}
+
+		</script>
+	</body>
+</html>
